@@ -117,16 +117,21 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * bean factory, shutting down the previous bean factory (if any) and
 	 * initializing a fresh bean factory for the next phase of the context's lifecycle.
 	 */
+	/**此实现执行此上下文的底层 bean 工厂的实际刷新，关闭先前的 bean 工厂（如果有）并为上下文生命周期的下一阶段初始化一个新的 bean 工厂*/
 	@Override
 	protected final void refreshBeanFactory() throws BeansException {
+		// 关闭先前的 bean 工厂（如果有）
 		if (hasBeanFactory()) {
 			destroyBeans();
 			closeBeanFactory();
 		}
 		try {
+			// TODO: 2022/3/19   为上下文生命周期的下一阶段初始化一个新的 bean 工厂 Bean容器工厂类：DefaultListableBeanFactory
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
 			beanFactory.setSerializationId(getId());
+			// 定制Bean工厂
 			customizeBeanFactory(beanFactory);
+			// TODO: 2022/3/19   加载 BeanDefinition 到容器中
 			loadBeanDefinitions(beanFactory);
 			this.beanFactory = beanFactory;
 		}
@@ -210,6 +215,9 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * @see DefaultListableBeanFactory#setAllowCircularReferences
 	 * @see DefaultListableBeanFactory#setAllowRawInjectionDespiteWrapping
 	 * @see DefaultListableBeanFactory#setAllowEagerClassLoading
+	 * 自定义此上下文使用的内部 bean 工厂。为每次refresh()尝试调用。
+	 * 默认实现应用此上下文的“allowBeanDefinitionOverriding”和“allowCircularReferences”设置（如果指定）。
+	 * 可以在子类中重写以自定义任何DefaultListableBeanFactory的设置
 	 */
 	protected void customizeBeanFactory(DefaultListableBeanFactory beanFactory) {
 		if (this.allowBeanDefinitionOverriding != null) {
@@ -228,6 +236,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * @throws IOException if loading of bean definition files failed
 	 * @see org.springframework.beans.factory.support.PropertiesBeanDefinitionReader
 	 * @see org.springframework.beans.factory.xml.XmlBeanDefinitionReader
+	 * 将 bean 定义加载到给定的 bean 工厂，通常通过委托给一个或多个 bean 定义读取器
 	 */
 	protected abstract void loadBeanDefinitions(DefaultListableBeanFactory beanFactory)
 			throws BeansException, IOException;
