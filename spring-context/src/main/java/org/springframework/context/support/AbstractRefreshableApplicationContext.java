@@ -126,12 +126,13 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 			closeBeanFactory();
 		}
 		try {
-			// TODO: 2022/3/19   为上下文生命周期的下一阶段初始化一个新的 bean 工厂 Bean容器工厂类：DefaultListableBeanFactory
+			// 为上下文生命周期的下一阶段初始化一个新的 bean 工厂 Bean容器工厂类：DefaultListableBeanFactory
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
+			// 为了序列化指定id，可以从id反序列化到beanFactory对象
 			beanFactory.setSerializationId(getId());
-			// 定制Bean工厂
+			// 定制beanFactory，设置相关属性，包括是否允许覆盖同名称的不同定义的对象以及循环依赖
 			customizeBeanFactory(beanFactory);
-			// TODO: 2022/3/19   加载 BeanDefinition 到容器中
+			// 初始化documentReader,并进行XML文件读取及解析,默认命名空间的解析，自定义标签的解析
 			loadBeanDefinitions(beanFactory);
 			this.beanFactory = beanFactory;
 		}
