@@ -7,11 +7,20 @@
 		<property name="name" value="zhangsan"></property>
 		<property name="address" value="陕西省_西安市_高陵区"></property>
 	</bean>
+<!--	<bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">-->
+<!--		<property name="propertyEditorRegistrars">-->
+<!--			<list>-->
+<!--				<bean class="com.wangjh.selfEditor.AddressPropertyEditorRegistrar"></bean>-->
+<!--			</list>-->
+<!--		</property>-->
+<!--	</bean>-->
 	<bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">
-		<property name="propertyEditorRegistrars">
-			<list>
-				<bean class="com.wangjh.selfEditor.AddressPropertyEditorRegistrar"></bean>
-			</list>
+		<property name="customEditors">
+			<map>
+				<entry key="com.wangjh.selfEditor.Address">
+					<value>com.wangjh.selfEditor.AddressPropertyEditor</value>
+				</entry>
+			</map>
 		</property>
 	</bean>
 </beans>
