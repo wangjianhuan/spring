@@ -709,6 +709,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		if (!shouldIgnoreSpel) {
 			beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));
 		}
+		//进行扩展，让spring可以处理一些自己想定义的方法做一些事情，比如以下地址格式识别：陕西省——西安市——雁塔区
 		beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment()));
 
 		// Configure the bean factory with context callbacks.使用上下文回调配置 bean 工厂。

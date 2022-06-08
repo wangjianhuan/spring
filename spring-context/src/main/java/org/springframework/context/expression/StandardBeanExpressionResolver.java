@@ -101,6 +101,7 @@ public class StandardBeanExpressionResolver implements BeanExpressionResolver {
 	 * @param beanClassLoader the factory's bean class loader
 	 */
 	public StandardBeanExpressionResolver(@Nullable ClassLoader beanClassLoader) {
+		// 设置spel表达式 对配置文件进行解析
 		this.expressionParser = new SpelExpressionParser(new SpelParserConfiguration(null, beanClassLoader));
 	}
 
