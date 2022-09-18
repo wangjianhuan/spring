@@ -13,4 +13,11 @@ public class A {
 		System.out.println("A.setB");
 		this.b = b;
 	}
+
+	@Override
+	public String toString() {
+		return "A{" +
+				"b=" + b +
+				'}';
+	}
 }
