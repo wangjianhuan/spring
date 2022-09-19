@@ -266,6 +266,20 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				checkMergedBeanDefinition(mbd, beanName, args);
 
 				// Guarantee initialization of beans that the current bean depends on.
+				/**
+				 * 解决Bean的 dependsOn 关系
+				 * 利用 dependentBeanMap 解决
+				 * 对于出现依赖的类去dependentBeanMap查询对应的关系
+				 * 如果有，则失败
+				 * 否则 dependsOn的beanName作为key，当前bean作为value保存在 dependentBeanMap 中
+				 * 当执行到另一bean时  可以在 dependentBeanMap 中查询到对应的关系，则直接报错为循环依赖
+				 * eg:
+				 * A.dependsOn("B")
+				 * dependentBeanMap.get("A") == null
+				 * dependentBeanMap.add(new Set< >("B","A"))
+				 * dependentBeanMap.get("B") != null
+				 * throw BeanCreationException
+				 */
 				String[] dependsOn = mbd.getDependsOn();
 				if (dependsOn != null) {
 					for (String dep : dependsOn) {

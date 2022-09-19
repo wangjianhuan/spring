@@ -12,8 +12,8 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan("com.wangjh.annotation")
 public class AppConfig {
 
-	@Bean({"orderService1","orderService2"})
-	public OrderService orderService(){
-		return new OrderService();
-	}
+//	@Bean({"orderService1","orderService2"})
+//	public OrderService orderService(){
+//		return new OrderService();
+//	}
 }
