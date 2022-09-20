@@ -299,7 +299,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 
 				// Create bean instance.
-				// Bean 的作用域
+				// 单例 bean 的创建
 				if (mbd.isSingleton()) {
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
@@ -318,6 +318,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 				else if (mbd.isPrototype()) {
 					// It's a prototype -> create a new instance.
+					// 原型 bean 的创建
 					Object prototypeInstance = null;
 					try {
 						// 原型 Bean 标志为创建中
@@ -332,7 +333,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 
 				else {
-					// 特殊 Bean 的作用域解析（	scope.get(beanName, () -> {
+					// 特殊 Bean 的作用域解析Scope接口下有其具体实现， 主get方法
+					// （	scope.get(beanName, () -> {
 					//							beforePrototypeCreation(beanName);
 					//							try {
 					//								return createBean(beanName, mbd, args);
@@ -1470,6 +1472,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected Class<?> resolveBeanClass(RootBeanDefinition mbd, String beanName, Class<?>... typesToMatch)
 			throws CannotLoadBeanClassException {
 
+		// hasBeanClass() 判断 mbd 的 beanClass 是不是一个类   而不是一个字符串
 		try {
 			if (mbd.hasBeanClass()) {
 				return mbd.getBeanClass();
@@ -1488,6 +1491,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	private Class<?> doResolveBeanClass(RootBeanDefinition mbd, Class<?>... typesToMatch)
 			throws ClassNotFoundException {
 
+		// 获取类加载器
 		ClassLoader beanClassLoader = getBeanClassLoader();
 		ClassLoader dynamicLoader = beanClassLoader;
 		boolean freshResolve = false;
@@ -1528,6 +1532,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				// to avoid storing the resolved Class in the bean definition.
 				if (dynamicLoader != null) {
 					try {
+						// 使用类加载器加载类
 						return dynamicLoader.loadClass(className);
 					}
 					catch (ClassNotFoundException ex) {

@@ -15,8 +15,9 @@ public class AnnotationTest {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
 
 //		UserService bean = (UserService) context.getBean("userService", new OrderService());
-		UserService bean = (UserService) context.getBean("userService");
+//		UserService bean = (UserService) context.getBean("userService1");
 		OrderService bean1 = (OrderService) context.getBean("orderService");
+		UserService bean = (UserService) context.getBean("userService");
 		System.out.println("bean1 = " + bean1);
 		System.out.println("bean = " + bean1);
 
