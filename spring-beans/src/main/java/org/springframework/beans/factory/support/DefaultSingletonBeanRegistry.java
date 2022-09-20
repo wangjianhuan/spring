@@ -134,6 +134,9 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * @param beanName the name of the bean
 	 * @param singletonObject the singleton object
 	 */
+	/**
+	 * 添加单例 bean 到单例池中
+	 */
 	protected void addSingleton(String beanName, Object singletonObject) {
 		synchronized (this.singletonObjects) {
 			this.singletonObjects.put(beanName, singletonObject);
@@ -224,7 +227,10 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	public Object getSingleton(String beanName, ObjectFactory<?> singletonFactory) {
 		Assert.notNull(beanName, "Bean name must not be null");
 		synchronized (this.singletonObjects) {
+			// 去单例池寻找当前单例对象
 			Object singletonObject = this.singletonObjects.get(beanName);
+			// 在单例池中未找到当前单例对象则开始创建当前单例对象
+			// singletonsCurrentlyInDestruction 默认false 判断当前对象是否在创建中
 			if (singletonObject == null) {
 				if (this.singletonsCurrentlyInDestruction) {
 					throw new BeanCreationNotAllowedException(beanName,
@@ -241,6 +247,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					this.suppressedExceptions = new LinkedHashSet<>();
 				}
 				try {
+					// 创建单例 Bean
 					singletonObject = singletonFactory.getObject();
 					newSingleton = true;
 				}
@@ -266,6 +273,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					}
 					afterSingletonCreation(beanName);
 				}
+				// 对于新创建的单例 Bean 放入单例池中
 				if (newSingleton) {
 					addSingleton(beanName, singletonObject);
 				}

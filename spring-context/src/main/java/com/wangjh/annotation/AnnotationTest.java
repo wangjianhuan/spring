@@ -15,7 +15,7 @@ public class AnnotationTest {
 
 //		UserService bean = (UserService) context.getBean("userService", new OrderService());
 //		UserService bean = (UserService) context.getBean("userService1");
-		OrderService bean1 = (OrderService) context.getBean("orderService2");
+		OrderService bean1 = (OrderService) context.getBean("orderService");
 		System.out.println("bean = " + bean1);
 
 
