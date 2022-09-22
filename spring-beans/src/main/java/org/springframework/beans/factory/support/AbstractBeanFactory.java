@@ -333,12 +333,13 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 
 				else {
-					// 特殊 Bean 的作用域解析Scope接口下有其具体实现， 主get方法
-					// （	scope.get(beanName, () -> {
-					//							beforePrototypeCreation(beanName);
-					//							try {
-					//								return createBean(beanName, mbd, args);
-					//							}）
+					/** 特殊 Bean 的作用域解析Scope接口下有其具体实现， 主get方法
+					 * （	scope.get(beanName, () -> {
+					 *							beforePrototypeCreation(beanName);
+					 *							try {
+					 *								return createBean(beanName, mbd, args);
+					 *							}）
+					 */
 					String scopeName = mbd.getScope();
 					if (!StringUtils.hasLength(scopeName)) {
 						throw new IllegalStateException("No scope name defined for bean '" + beanName + "'");
@@ -953,6 +954,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * freshly (re-)building it if necessary.
 	 * @since 5.3
 	 */
+	/**
+	 * 获取 BeanPostProcessorCache 缓存
+	 */
 	BeanPostProcessorCache getBeanPostProcessorCache() {
 		BeanPostProcessorCache bppCache = this.beanPostProcessorCache;
 		if (bppCache == null) {
@@ -1516,6 +1520,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			Object evaluated = evaluateBeanDefinitionString(className, mbd);
 			if (!className.equals(evaluated)) {
 				// A dynamically resolved expression, supported as of 4.2...
+				// 解析 mbd 后为一个类，则直接返回该类
 				if (evaluated instanceof Class<?> clazz) {
 					return clazz;
 				}
