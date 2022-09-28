@@ -1835,6 +1835,10 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * @see AbstractBeanDefinition#getDestroyMethodName()
 	 * @see org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor
 	 */
+	/**
+	 * 判断当前这个 Bean 在销毁的时候是都需要执行某些销毁的逻辑
+	 * DisposableBeanAdapter.hasDestroyMethod(bean, mbd) 判断是否具有销毁的逻辑
+	 */
 	protected boolean requiresDestruction(Object bean, RootBeanDefinition mbd) {
 		return (bean.getClass() != NullBean.class && (DisposableBeanAdapter.hasDestroyMethod(bean, mbd) ||
 				(hasDestructionAwareBeanPostProcessors() && DisposableBeanAdapter.hasApplicableProcessors(

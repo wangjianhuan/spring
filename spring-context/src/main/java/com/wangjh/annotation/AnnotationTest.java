@@ -22,5 +22,10 @@ public class AnnotationTest {
 		System.out.println("bean = " + bean1);
 
 
+
+		// 调用 close 方法销毁 Bean 是调用 Bean 销毁方法
+		// 1 @PreDestroy 	2 implements DisposableBean 	3 registerShutdownHook()
+		context.registerShutdownHook();
+		context.close();
 	}
 }

@@ -1,7 +1,6 @@
 package com.wangjh.annotation.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Component;
  * @email 1151777592@qq.com
  */
 @Component
-@Scope("prototype")
 public class UserService {
 
 	@Autowired
