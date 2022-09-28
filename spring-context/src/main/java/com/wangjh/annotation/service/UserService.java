@@ -27,4 +27,8 @@ public class UserService {
 		this.orderService = orderService;
 		System.out.println("有参：orderService = " + orderService);
 	}
+
+	public void a(){
+		System.out.println("方法A");
+	}
 }
