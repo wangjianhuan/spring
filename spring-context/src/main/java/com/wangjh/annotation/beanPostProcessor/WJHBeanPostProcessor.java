@@ -1,13 +1,10 @@
 package com.wangjh.annotation.beanPostProcessor;
 
-import com.wangjh.annotation.service.OrderService;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor;
 import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class WJHBeanPostProcessor implements MergedBeanDefinitionPostProcessor {
 
 	@Override

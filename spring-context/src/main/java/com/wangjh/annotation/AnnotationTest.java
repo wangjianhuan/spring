@@ -17,14 +17,14 @@ public class AnnotationTest {
 //		UserService bean = (UserService) context.getBean("userService", new OrderService());
 //		UserService bean = (UserService) context.getBean("userService1");
 		OrderService bean1 = (OrderService) context.getBean("orderService");
+//		OrderService bean111 = (OrderService) context.getBean("orderService");
+		System.out.println(bean1);
 		UserService bean = (UserService) context.getBean("userService");
-		System.out.println("bean1 = " + bean1);
-		System.out.println("bean = " + bean1);
 
 
 
 		// 调用 close 方法销毁 Bean 是调用 Bean 销毁方法
-		// 1 @PreDestroy 	2 implements DisposableBean 	3 registerShutdownHook()
+		// 1 @PreDestroy 	2 implements DisposableBean(AutoCloseable) 	3 registerShutdownHook()
 		context.registerShutdownHook();
 		context.close();
 	}

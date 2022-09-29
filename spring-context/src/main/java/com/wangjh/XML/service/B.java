@@ -1,4 +1,4 @@
-package com.wangjh.service;
+package com.wangjh.XML.service;
 
 public class B {
 

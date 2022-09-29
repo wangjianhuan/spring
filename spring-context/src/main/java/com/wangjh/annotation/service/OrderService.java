@@ -1,6 +1,5 @@
 package com.wangjh.annotation.service;
 
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 /**

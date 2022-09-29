@@ -1,6 +1,5 @@
 package com.wangjh.annotation.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,10 +10,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserService {
 
-	@Autowired
+//	@Autowired
 	private User user;
 
-	@Autowired
+//	@Autowired
 	private OrderService orderService;
 
 	public UserService() {
@@ -28,5 +27,9 @@ public class UserService {
 
 	public void a(){
 		System.out.println("方法A");
+	}
+
+	public void setOrderService(OrderService orderService) {
+		this.orderService = orderService;
 	}
 }

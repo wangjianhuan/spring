@@ -1,14 +1,13 @@
 package com.wangjh.annotation.service;
 
 import jakarta.annotation.PreDestroy;
-import org.springframework.stereotype.Component;
 
 /**
  * @author wjh
  * @date 2022/9/18 21:27
  * @email 1151777592@qq.com
  */
-@Component
+//@Component
 public class UserDestroyService implements AutoCloseable {
 
 	public UserDestroyService() {

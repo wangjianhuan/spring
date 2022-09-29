@@ -1,4 +1,4 @@
-package com.wangjh.code;
+package com.wangjh.XML.code;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

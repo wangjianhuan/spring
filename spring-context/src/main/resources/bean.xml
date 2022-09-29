@@ -3,6 +3,6 @@
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="A" class="com.wangjh.service.A"/>
-	<bean id="B" class="com.wangjh.service.B"/>
+	<bean id="A" class="com.wangjh.XML.service.A" autowire="byName"/>
+	<bean id="B" class="com.wangjh.XML.service.B"/>
 </beans>

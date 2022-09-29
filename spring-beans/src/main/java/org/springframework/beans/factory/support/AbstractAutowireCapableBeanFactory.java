@@ -1361,8 +1361,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		PropertyValues pvs = (mbd.hasPropertyValues() ? mbd.getPropertyValues() : null);
 
 		// Spring 自带的依赖注入
-		// @Bean (autuwire = AutoWired.BY_NAME) 方式可以注入
+		// @Bean (autuwire = AutoWired.BY_NAME) || autowire="byName"（XML文件） 方式可以注入
 		// 原理：会去寻找当前类里面所有的set方法， 然后根据 BY_NAME 或者 BY_TYPE 的其中一种方式注入对应的类（BY_NAME 方式用的时 set方法名 去掉set前缀作为名字进行寻找）
+		// update: @Bean (autuwire = AutoWired.BY_NAME) 注解已经不可使用   XML方式还来可以使用（autowire="byName"） 本方式不会处理基本类型的注入
 		int resolvedAutowireMode = mbd.getResolvedAutowireMode();
 		if (resolvedAutowireMode == AUTOWIRE_BY_NAME || resolvedAutowireMode == AUTOWIRE_BY_TYPE) {
 			MutablePropertyValues newPvs = new MutablePropertyValues(pvs);
@@ -1400,6 +1401,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		if (pvs != null) {
+			// 设置 BD 的属性值到 Bean 中
 			applyPropertyValues(beanName, mbd, bw, pvs);
 		}
 	}
@@ -1416,11 +1418,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected void autowireByName(
 			String beanName, AbstractBeanDefinition mbd, BeanWrapper bw, MutablePropertyValues pvs) {
 
+		// 获取当前 BeanWrapper 的需要设置的属性名字   包括set方法名
 		String[] propertyNames = unsatisfiedNonSimpleProperties(mbd, bw);
 		for (String propertyName : propertyNames) {
 			if (containsBean(propertyName)) {
 				Object bean = getBean(propertyName);
+				// 自带的注入，这儿只是添加到 pvs 中，并没有直接 set 进属性
 				pvs.add(propertyName, bean);
+				// 记录一下当前 beanName 依赖了 propertyName
 				registerDependentBean(propertyName, beanName);
 				if (logger.isTraceEnabled()) {
 					logger.trace("Added autowiring by name from bean name '" + beanName +
@@ -1456,12 +1461,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		Set<String> autowiredBeanNames = new LinkedHashSet<>(4);
+		// 当前 Bean 中自动注入的属性名
 		String[] propertyNames = unsatisfiedNonSimpleProperties(mbd, bw);
 		for (String propertyName : propertyNames) {
 			try {
 				PropertyDescriptor pd = bw.getPropertyDescriptor(propertyName);
 				// Don't try autowiring by type for type Object: never makes sense,
 				// even if it technically is a unsatisfied, non-simple property.
+				// 寻找当前对象
 				if (Object.class != pd.getPropertyType()) {
 					MethodParameter methodParam = BeanUtils.getWriteMethodParameter(pd);
 					// Do not allow eager init for type matching in case of a prioritized post-processor.
@@ -1502,8 +1509,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		PropertyValues pvs = mbd.getPropertyValues();
 		PropertyDescriptor[] pds = bw.getPropertyDescriptors();
 		for (PropertyDescriptor pd : pds) {
-			if (pd.getWriteMethod() != null && !isExcludedFromDependencyCheck(pd) && !pvs.contains(pd.getName()) &&
-					!BeanUtils.isSimpleProperty(pd.getPropertyType())) {
+			// 1.是否具有 set 方法
+			if (pd.getWriteMethod() != null
+					// 2.没有在 ignoredDependencyTypes 中
+					&& !isExcludedFromDependencyCheck(pd)
+					// 3.如果该属性对应的set方法是实现某个接口中所定义的，那么接口没有在 ignoredDependencyTypes 中
+					&& !pvs.contains(pd.getName())
+					// 4.属性类型不是简单类型，比如 int、Integer、 int[]
+					&& !BeanUtils.isSimpleProperty(pd.getPropertyType())) {
 				result.add(pd.getName());
 			}
 		}

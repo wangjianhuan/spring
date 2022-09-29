@@ -1,7 +1,7 @@
 package com.wangjh.annotation.config;
 
 import com.wangjh.annotation.service.OrderService;
-import org.springframework.context.annotation.Bean;
+import com.wangjh.annotation.service.OrderServiceBY_NAME;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
@@ -16,4 +16,17 @@ public class AppConfig {
 //	public OrderService orderService(){
 //		return new OrderService();
 //	}
+
+	// autowire 被弃用 现已删除
+//	@Bean(autowire = Autowire.BY_NAME)
+	public OrderServiceBY_NAME orderServiceBYName(){
+		return null;
+	}
+
+
+//	@Bean
+	public OrderService orderService111(){
+		System.out.println("AppConfig.orderService111");
+		return new OrderService();
+	}
 }
