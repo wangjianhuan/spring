@@ -408,6 +408,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 		// 寻找注入点
 		InjectionMetadata metadata = findAutowiringMetadata(beanName, bean.getClass(), pvs);
 		try {
+			// 进行注入
 			metadata.inject(bean, beanName, pvs);
 		}
 		catch (BeanCreationException ex) {
@@ -482,7 +483,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 				// field 上是否具有 autowiredAnnotationTypes 缓存中的其中一个注解
 				MergedAnnotation<?> ann = findAutowiredAnnotation(field);
 				if (ann != null) {
-					// 判断是否是静态的，静态的属性不会被注入
+					// 判断是否是静态的，静态的属性不会被注入(产生的问题：如果两个 Bean 都是原型 Bean，被注入的 Bean 被 static 修饰了 则注入的是同一个 Bean)
 					if (Modifier.isStatic(field.getModifiers())) {
 						if (logger.isInfoEnabled()) {
 							logger.info("Autowired annotation is not supported on static fields: " + field);
@@ -497,6 +498,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 
 			// 遍历 targetClass 上所有的方法
 			ReflectionUtils.doWithLocalMethods(targetClass, method -> {
+				// 寻找桥接方法 findBridgedMethod(method)
 				Method bridgedMethod = BridgeMethodResolver.findBridgedMethod(method);
 				if (!BridgeMethodResolver.isVisibilityBridgeMethodPair(method, bridgedMethod)) {
 					return;
@@ -637,6 +639,8 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 			Field field = (Field) this.member;
 			Object value;
 			if (this.cached) {
+				// 对于原型 Bean 在第一次创建该 Bean 时 cache 为 false，他会自己寻找注入点，注入之后为 cache 为 ture ，下次创建时可以跳过寻找注入点
+				// cache 中缓存的是 BeanName 而非 BeanWrapper, 方便注入是注入的原型 Bean（不同的 Bean 实例）
 				try {
 					value = resolvedCachedArgument(beanName, this.cachedFieldValue);
 				}
@@ -646,8 +650,10 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 				}
 			}
 			else {
+				// 根据 field 在 BeanFactory 中寻找需要注入的值
 				value = resolveFieldValue(field, bean, beanName);
 			}
+			// 通过反射注入对应的值
 			if (value != null) {
 				ReflectionUtils.makeAccessible(field);
 				field.set(bean, value);
@@ -711,6 +717,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 
 		@Override
 		protected void inject(Object bean, @Nullable String beanName, @Nullable PropertyValues pvs) throws Throwable {
+			// 如果 pvs 中已经有了当前诸如点的值了， 则跳过注入阶段
 			if (checkPropertySkipping(pvs)) {
 				return;
 			}

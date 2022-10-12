@@ -1,7 +1,6 @@
 package com.wangjh.annotation;
 
 import com.wangjh.annotation.config.AppConfig;
-import com.wangjh.annotation.service.OrderService;
 import com.wangjh.annotation.service.UserService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -16,10 +15,19 @@ public class AnnotationTest {
 
 //		UserService bean = (UserService) context.getBean("userService", new OrderService());
 //		UserService bean = (UserService) context.getBean("userService1");
-		OrderService bean1 = (OrderService) context.getBean("orderService");
+//		OrderService bean1 = (OrderService) context.getBean("orderService");
 //		OrderService bean111 = (OrderService) context.getBean("orderService");
-		System.out.println(bean1);
+//		System.out.println(bean1);
 		UserService bean = (UserService) context.getBean("userService");
+		UserService bean1 = (UserService) context.getBean("userService");
+		UserService bean2 = (UserService) context.getBean("userService");
+		System.out.println(bean);
+		System.out.println(bean.getOrderService());
+		System.out.println(bean1);
+		System.out.println(bean1.getOrderService());
+		System.out.println(bean2);
+		System.out.println(bean2.getOrderService());
+
 
 
 

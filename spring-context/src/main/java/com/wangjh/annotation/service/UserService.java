@@ -9,12 +9,17 @@ import org.springframework.stereotype.Component;
  * @email 1151777592@qq.com
  */
 @Component
+//@Scope("prototype")
 public class UserService {
 
 	@Autowired
 	private User user;
 
-	@Autowired
+	public OrderService getOrderService() {
+		return orderService;
+	}
+
+	@Autowired(required = true)		//必须赋值  ，如果没有赋值则报错
 	private OrderService orderService;
 
 	public UserService() {

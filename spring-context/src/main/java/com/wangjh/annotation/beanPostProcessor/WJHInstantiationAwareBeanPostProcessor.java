@@ -7,12 +7,11 @@ import org.springframework.beans.factory.config.InstantiationAwareBeanPostProces
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor;
 import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.stereotype.Component;
 
 /**
  * @author 11517
  */
-@Component
+//@Component
 public class WJHInstantiationAwareBeanPostProcessor implements InstantiationAwareBeanPostProcessor, MergedBeanDefinitionPostProcessor {
 	@Override
 	public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) throws BeansException {
@@ -38,6 +37,7 @@ public class WJHInstantiationAwareBeanPostProcessor implements InstantiationAwar
 			OrderService orderService = new OrderService();
 			System.out.println(beanDefinition.getAutowireMode());
 			beanDefinition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
+//			此方法注入值需要对应 set 方法
 //			beanDefinition.getPropertyValues().add("orderService", orderService);
 		}
 	}

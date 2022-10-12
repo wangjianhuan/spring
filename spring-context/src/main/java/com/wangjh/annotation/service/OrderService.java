@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
  * @email 1151777592@qq.com
  */
 @Component
+//@Scope("prototype")
 public class OrderService {
 
 }
