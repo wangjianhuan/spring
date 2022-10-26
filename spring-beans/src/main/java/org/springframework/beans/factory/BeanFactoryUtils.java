@@ -257,7 +257,7 @@ public abstract class BeanFactoryUtils {
 		Assert.notNull(lbf, "ListableBeanFactory must not be null");
 		// 从本容器中找
 		String[] result = lbf.getBeanNamesForType(type, includeNonSingletons, allowEagerInit);
-		// 从夫容器中找
+		// 从父容器中找
 		if (lbf instanceof HierarchicalBeanFactory hbf) {
 			if (hbf.getParentBeanFactory() instanceof ListableBeanFactory) {
 				String[] parentResult = beanNamesForTypeIncludingAncestors(

@@ -24,7 +24,7 @@ public class AppConfig {
 	}
 
 
-//	@Bean
+	//@Bean(autowireCandidate = false)  // autowireCandidate = false 表示不可以进行依赖注入
 	public OrderService orderService111(){
 		System.out.println("AppConfig.orderService111");
 		return new OrderService();
