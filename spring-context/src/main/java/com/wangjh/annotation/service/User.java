@@ -14,6 +14,15 @@ public class User {
 
 	private String name;
 
+//	List<Object> beans;
+//
+//	public void aVoid(){
+//		for (Object item: beans
+//			 ) {
+//			System.out.println(item);
+//		}
+//	}
+
 	@Override
 	public String toString() {
 		return "User{" +

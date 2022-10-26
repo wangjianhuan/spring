@@ -29,6 +29,9 @@ public class AnnotationTest {
 		System.out.println(bean2.getOrderService());
 
 
+//		User user = (User) context.getBean("user");
+//		user.aVoid();
+
 
 
 		// 调用 close 方法销毁 Bean 是调用 Bean 销毁方法
