@@ -1132,7 +1132,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @see #instantiateBean
 	 */
 	protected BeanWrapper createBeanInstance(String beanName, RootBeanDefinition mbd, @Nullable Object[] args) {
-		// Make sure bean class is actually resolved at this point.
+		// Make sure bean class is actually resolved at this point. 确保解析当前的Bean。
 		Class<?> beanClass = resolveBeanClass(mbd, beanName);
 
 		if (beanClass != null && !Modifier.isPublic(beanClass.getModifiers()) && !mbd.isNonPublicAccessAllowed()) {
@@ -1163,6 +1163,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}
 		}
 		// 推断构造方法
+		/**
+		 * 默认情况下，用无参构造方法，或者只有一个构造方法的用哪唯一一个构造方法
+		 * 程序员指定了构造方法入参值，通过 getBean() 或者BeanDefinition.getConstructorArgumentValues() 指定，那就用所匹配的构造方法
+		 * 程序员想让Spring自动选择构造方法以及构造方法的入参值， autowire = “constructor”
+		 * 程序员通过@Autowired注解指定了某个构造方法，但是希望Spring自动找该构造方法的入参值
+		 */
 		if (resolved) {
 			// 如果确定了当前 Bean 的构造方法，那么看是否需要对构造方法进行参数的依赖注入（构造方法注入）
 			if (autowireNecessary) {

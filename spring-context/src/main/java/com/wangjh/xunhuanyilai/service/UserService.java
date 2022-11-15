@@ -1,0 +1,35 @@
+package com.wangjh.xunhuanyilai.service;
+
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+
+@Service
+@Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+//@Lazy
+public class UserService {
+
+	//@Autowired
+	private OrderService orderService;
+
+
+	public UserService() {
+		System.out.println("UserService.UserService:无参构造方法");
+	}
+
+
+	//public UserService(OrderService orderService) {
+	//	this.orderService = orderService;
+	//	System.out.println("UserService.UserService:有参构造方法");
+	//}
+
+	public UserService(OrderService orderService, OrderService orderService1) {
+		this.orderService = orderService;
+		this.orderService = orderService1;
+		System.out.println("UserService.UserService:有参构造方法1");
+	}
+
+	public void test(){
+		System.out.println("AService.test");
+	}
+}
