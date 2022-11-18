@@ -12,22 +12,22 @@ public class UserService {
 	//@Autowired
 	private OrderService orderService;
 
-
-	public UserService() {
-		System.out.println("UserService.UserService:无参构造方法");
-	}
-
-
-	//public UserService(OrderService orderService) {
-	//	this.orderService = orderService;
-	//	System.out.println("UserService.UserService:有参构造方法");
+	//
+	//public UserService() {
+	//	System.out.println("UserService.UserService:无参构造方法");
 	//}
 
-	public UserService(OrderService orderService, OrderService orderService1) {
+
+	public UserService(OrderService orderService) {
 		this.orderService = orderService;
-		this.orderService = orderService1;
-		System.out.println("UserService.UserService:有参构造方法1");
+		System.out.println("UserService.UserService:有参构造方法");
 	}
+
+	//public UserService(OrderService orderService, OrderService orderService1) {
+	//	this.orderService = orderService;
+	//	this.orderService = orderService1;
+	//	System.out.println("UserService.UserService:有参构造方法1");
+	//}
 
 	public void test(){
 		System.out.println("AService.test");

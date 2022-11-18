@@ -1154,10 +1154,15 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Shortcut when re-creating the same bean...
 		boolean resolved = false;
 		boolean autowireNecessary = false;
+		if (beanName == "userService"){
+			beanName = beanName;
+		}
+		// 判断方法有没有携带参数，对于带参数的不查询缓存
 		if (args == null) {
 			synchronized (mbd.constructorArgumentLock) {
 				if (mbd.resolvedConstructorOrFactoryMethod != null) {
 					resolved = true;
+					// autowireNecessary 是判断有没有必要进行构造方法参数注入（对于没有无参构造方法的，默认用有参构造方法，autowireNecessary = true）
 					autowireNecessary = mbd.constructorArgumentsResolved;
 				}
 			}
@@ -1169,9 +1174,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		 * 程序员想让Spring自动选择构造方法以及构造方法的入参值， autowire = “constructor”
 		 * 程序员通过@Autowired注解指定了某个构造方法，但是希望Spring自动找该构造方法的入参值
 		 */
-		if (resolved) {
-			// 如果确定了当前 Bean 的构造方法，那么看是否需要对构造方法进行参数的依赖注入（构造方法注入）
+ 		if (resolved) {
+			// 如果确定了当前 Bean 的构造方法，那么看是否需要对构造方法进行参数的依赖注入（构造方法注入）autowireNecessary = true时
 			if (autowireNecessary) {
+				// 表示当前寻找注入点，对于默认有参的构造方法，会使用本方法取寻找注入点
 				return autowireConstructor(beanName, mbd, null, null);
 			}
 			else {
@@ -1182,7 +1188,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Candidate constructors for autowiring?
 		// 提供一个扩展点，可以利用 SmartInstantiationAwareBeanPostProcessor 来控制用 Bean 中的哪一个构造方法
+		// 比如 AutowiredAnnotationBeanPostProcessor 会把添加了 @Autowired 注解的构造方法找出来，具体代码会更加复杂一些
 		Constructor<?>[] ctors = determineConstructorsFromBeanPostProcessors(beanClass, beanName);
+		// 如果推断出来了构造方法，则需要给构造方法赋值，也就是给构造方法参数赋值，也就是构造方法注入
+		// 如果没有推断出来构造方法，但是 autowireMode = AUTOWIRE_CONSTRUCTOR 也需要赋值，因为不确定是不是有参构造函数还是无参构造函数 		//beanDefinition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR);
+		// 如果通过 mbd 指定了构造方法参数值，那肯定需要构造函数注入了  //beanDefinition.getConstructorArgumentValues().addGenericArgumentValue(new OrderService());
+		// 如果 getBean() 的时候传入了构造方法参数值那肯定是要构造方法注入了
 		if (ctors != null || mbd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR ||
 				mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args)) {
 			return autowireConstructor(beanName, mbd, ctors, args);
