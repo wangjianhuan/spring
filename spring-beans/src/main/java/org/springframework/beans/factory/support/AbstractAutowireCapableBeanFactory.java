@@ -1152,17 +1152,20 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		// Shortcut when re-creating the same bean...
-		boolean resolved = false;
+		// 当重新创建相同的 Bean 时的快捷方式
+		boolean resolved = false; // 是否创建过的标识
 		boolean autowireNecessary = false;
 		if (beanName == "userService"){
 			beanName = beanName;
 		}
 		// 判断方法有没有携带参数，对于带参数的不查询缓存
-		if (args == null) {
+		if (args == null) { // 如果 getBean() 里面传了参数， 则不会缓存， 只有当该方法没有参数的时候，才会调用缓存功能
 			synchronized (mbd.constructorArgumentLock) {
+				// resolvedConstructorOrFactoryMethod 是一个创建过的 Bean 的 mbd 缓存， 创建相同的 Bean 直接使用之前的值就可以了
 				if (mbd.resolvedConstructorOrFactoryMethod != null) {
 					resolved = true;
 					// autowireNecessary 是判断有没有必要进行构造方法参数注入（对于没有无参构造方法的，默认用有参构造方法，autowireNecessary = true）
+					// autowireNecessary 标识有没有必要进行注入， 比如当前的 mbd 用的是无参构造函数，则 autowireNecessary 字段为 false
 					autowireNecessary = mbd.constructorArgumentsResolved;
 				}
 			}
@@ -1194,8 +1197,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// 如果没有推断出来构造方法，但是 autowireMode = AUTOWIRE_CONSTRUCTOR 也需要赋值，因为不确定是不是有参构造函数还是无参构造函数 		//beanDefinition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR);
 		// 如果通过 mbd 指定了构造方法参数值，那肯定需要构造函数注入了  //beanDefinition.getConstructorArgumentValues().addGenericArgumentValue(new OrderService());
 		// 如果 getBean() 的时候传入了构造方法参数值那肯定是要构造方法注入了
-		if (ctors != null || mbd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR ||
-				mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args)) {
+		if (ctors != null  // 为空的情况(不能加 @Autowired )：1、只有一个无参的构造函数	2、有多个构造函数 此时才会 ctors 才会为空
+				|| mbd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR
+				|| mbd.hasConstructorArgumentValues()
+				|| !ObjectUtils.isEmpty(args)) {
+			// 寻找构造函数的注入点
 			return autowireConstructor(beanName, mbd, ctors, args);
 		}
 
@@ -1206,6 +1212,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		// No special handling: simply use no-arg constructor.
+		// 使用无参的构造函数进行实例化对象
 		return instantiateBean(beanName, mbd);
 	}
 

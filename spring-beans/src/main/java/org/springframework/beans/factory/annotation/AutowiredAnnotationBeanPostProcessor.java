@@ -385,10 +385,13 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 							defaultConstructor = candidate;
 						}
 					}
+					// 如果 candidates 为空，则代表构造方法没有添加  @Autowired 注解
 					if (!candidates.isEmpty()) {
 						// Add default constructor to list of optional constructors, as fallback.
+						// 检查是否有 required = true 的构造函数
 						if (requiredConstructor == null) {
 							if (defaultConstructor != null) {
+								// 如果没有，添加默认的构造方法在与集合中
 								candidates.add(defaultConstructor);
 							}
 							else if (candidates.size() == 1 && logger.isInfoEnabled()) {
@@ -398,19 +401,24 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 										"default constructor to fall back to: " + candidates.get(0));
 							}
 						}
+						// 如果只有一个 required = true ，那么就默认为他是合格的
 						candidateConstructors = candidates.toArray(new Constructor<?>[0]);
 					}
+					// 如果没有 @Autowired 注解的构造函数，并且只有一个构造函数，并且是有参数（无参的在上层已经处理）
 					else if (rawCandidates.length == 1 && rawCandidates[0].getParameterCount() > 0) {
 						candidateConstructors = new Constructor<?>[] {rawCandidates[0]};
 					}
+					// primaryConstructor 暂时不考虑
 					else if (nonSyntheticConstructors == 2 && primaryConstructor != null &&
 							defaultConstructor != null && !primaryConstructor.equals(defaultConstructor)) {
 						candidateConstructors = new Constructor<?>[] {primaryConstructor, defaultConstructor};
 					}
+					// primaryConstructor 暂时不考虑
 					else if (nonSyntheticConstructors == 1 && primaryConstructor != null) {
 						candidateConstructors = new Constructor<?>[] {primaryConstructor};
 					}
 					else {
+						// 如果有多个有参构造函数，并且都没有添加 @Autowired 注解的，则会返回一个空的对象
 						candidateConstructors = new Constructor<?>[0];
 					}
 					this.candidateConstructorsCache.put(beanClass, candidateConstructors);

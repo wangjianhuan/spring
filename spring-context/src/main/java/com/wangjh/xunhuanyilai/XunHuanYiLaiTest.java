@@ -1,7 +1,6 @@
 package com.wangjh.xunhuanyilai;
 
 import com.wangjh.xunhuanyilai.config.AppConfig;
-import com.wangjh.xunhuanyilai.service.OrderService;
 import com.wangjh.xunhuanyilai.service.UserService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -25,6 +24,5 @@ public class XunHuanYiLaiTest {
 		//userService.test();
 
 
-		new OrderService();
 	}
 }
