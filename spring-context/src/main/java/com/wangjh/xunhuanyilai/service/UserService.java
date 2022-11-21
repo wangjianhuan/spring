@@ -1,6 +1,5 @@
 package com.wangjh.xunhuanyilai.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,7 @@ public class UserService {
 
 
 
-	@Autowired(required = false)
+	//@Autowired(required = false)
 	public UserService() {
 		System.out.println("UserService.UserService:无参构造方法");
 	}
@@ -23,14 +22,14 @@ public class UserService {
 
 
 
-	@Autowired(required = false)
+	//@Autowired(required = false)
 	public UserService(OrderService orderService) {
 		this.orderService = orderService;
 		System.out.println("UserService.UserService:有参构造方法");
 	}
 
-	//@Autowired
-	@Autowired(required = false)
+	//@Autowired(required = false)
+	//@ConstructorProperties("orderService")
 	public UserService(OrderService orderService, OrderService orderService1) {
 		this.orderService = orderService;
 		this.orderService = orderService1;

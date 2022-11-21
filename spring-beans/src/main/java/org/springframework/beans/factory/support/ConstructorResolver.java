@@ -167,53 +167,67 @@ class ConstructorResolver {
 
 			// Need to resolve the constructor.
 			// 是否需要解析构造函数
-			//
+			// 可选择构造函数不为空	||	mbd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR
 			boolean autowiring = (chosenCtors != null ||
 					mbd.getResolvedAutowireMode() == AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR);
 			ConstructorArgumentValues resolvedValues = null;
 
+			// 确定要选择的构造方法参数值，后续判断构造方法的参数个数，如果小于 minNrOfArgs ，则直接淘汰掉
 			int minNrOfArgs;
 			if (explicitArgs != null) {
+				// 如果直接传入构造方法的参数值，那么所用的构造方法参数值不能少于
 				minNrOfArgs = explicitArgs.length;
 			}
 			else {
+				// 如果通过 mbd 传入了构造方法参数值，因为通过下表指定了，比如0位置的值，2位置的值
 				ConstructorArgumentValues cargs = mbd.getConstructorArgumentValues();
 				resolvedValues = new ConstructorArgumentValues();
+				// 处理 RuntimeBeanReference
 				minNrOfArgs = resolveConstructorArguments(beanName, mbd, bw, cargs, resolvedValues);
 			}
 
+			// 对构造函数进行排序: public在最前，然后参数个数多的在前
 			AutowireUtils.sortConstructors(candidates);
 			int minTypeDiffWeight = Integer.MAX_VALUE;
 			Set<Constructor<?>> ambiguousConstructors = null;
 			Deque<UnsatisfiedDependencyException> causes = null;
 
+			// 遍历所有的构造函数，进行筛选
 			for (Constructor<?> candidate : candidates) {
+				// 参数个数
 				int parameterCount = candidate.getParameterCount();
-
+				// 本次遍历时，之前已经选出来所要用的构造方法和入参对象，如果参数个数比当前遍历的参数个数多，则不用再继续遍历
 				if (constructorToUse != null && argsToUse != null && argsToUse.length > parameterCount) {
 					// Already found greedy constructor that can be satisfied ->
 					// do not look any further, there are only less greedy constructors left.
 					break;
 				}
+
+				// 如果参数个数小于所要求的个数，则遍历下一个，这里考虑同时存在 public 和 非public 方法
 				if (parameterCount < minNrOfArgs) {
 					continue;
 				}
 
 				ArgumentsHolder argsHolder;
 				Class<?>[] paramTypes = candidate.getParameterTypes();
+				// 如果没有通过 getBean() 指定构造方法参数值
 				if (resolvedValues != null) {
 					try {
+						// 如果在构造方法上面使用了 @ConstructorProperties, 则直接使用定义的值作为构造方法参数名
 						String[] paramNames = ConstructorPropertiesChecker.evaluate(candidate, parameterCount);
+						// 获取构造方法参数名
 						if (paramNames == null) {
 							ParameterNameDiscoverer pnd = this.beanFactory.getParameterNameDiscoverer();
 							if (pnd != null) {
 								paramNames = pnd.getParameterNames(candidate);
 							}
 						}
+						// 根据参数类型和参数名字，找到对应的 Bean
 						argsHolder = createArgumentArray(beanName, mbd, resolvedValues, bw, paramTypes, paramNames,
 								getUserDeclaredConstructor(candidate), autowiring, candidates.length == 1);
 					}
 					catch (UnsatisfiedDependencyException ex) {
+						// 当前构造函数没有找到对应的参数，则执行下一个
 						if (logger.isTraceEnabled()) {
 							logger.trace("Ignoring constructor [" + candidate + "] of bean '" + beanName + "': " + ex);
 						}
@@ -230,12 +244,16 @@ class ConstructorResolver {
 					if (parameterCount != explicitArgs.length) {
 						continue;
 					}
+					// 不用在去 BeanFactory 寻找bean 对象了，已经有了，同时当前遍历的构造方法就是可用的构造方法
 					argsHolder = new ArgumentsHolder(explicitArgs);
 				}
 
+				// 当前遍历的构造方法所需要的入参对象都找到了，根据参数类型和找到的参数对象计算一个匹配值，值越小越匹配
+				// Lenient 表示宽松模式
 				int typeDiffWeight = (mbd.isLenientConstructorResolution() ?
 						argsHolder.getTypeDifferenceWeight(paramTypes) : argsHolder.getAssignabilityWeight(paramTypes));
 				// Choose this constructor if it represents the closest match.
+				// 值越小越匹配
 				if (typeDiffWeight < minTypeDiffWeight) {
 					constructorToUse = candidate;
 					argsHolderToUse = argsHolder;
@@ -243,6 +261,7 @@ class ConstructorResolver {
 					minTypeDiffWeight = typeDiffWeight;
 					ambiguousConstructors = null;
 				}
+				// 值相等的情况下，记录一下匹配值相同的构造方法
 				else if (constructorToUse != null && typeDiffWeight == minTypeDiffWeight) {
 					if (ambiguousConstructors == null) {
 						ambiguousConstructors = new LinkedHashSet<>();
@@ -251,7 +270,9 @@ class ConstructorResolver {
 					ambiguousConstructors.add(candidate);
 				}
 			}
+			// 遍历结束 END
 
+			// 如果没有可用的构造方法，就取出记录中最后一个异常并抛出
 			if (constructorToUse == null) {
 				if (causes != null) {
 					UnsatisfiedDependencyException ex = causes.removeLast();
@@ -264,6 +285,7 @@ class ConstructorResolver {
 						"Could not resolve matching constructor on bean class [" + mbd.getBeanClassName() + "] " +
 						"(hint: specify index/type/name arguments for simple parameters to avoid type ambiguities)");
 			}
+			// 如果有可用的构造方法，但是有多个
 			else if (ambiguousConstructors != null && !mbd.isLenientConstructorResolution()) {
 				throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 						"Ambiguous constructor matches found on bean class [" + mbd.getBeanClassName() + "] " +
@@ -271,6 +293,7 @@ class ConstructorResolver {
 						ambiguousConstructors);
 			}
 
+			// 如果没有通过 getBean() 方法传入参数，并且找到了构造方法以及对应的入参对象则缓存
 			if (explicitArgs == null && argsHolderToUse != null) {
 				argsHolderToUse.storeCache(mbd, constructorToUse);
 			}
@@ -693,11 +716,14 @@ class ConstructorResolver {
 		Set<ConstructorArgumentValues.ValueHolder> usedValueHolders = new HashSet<>(paramTypes.length);
 		Set<String> autowiredBeanNames = new LinkedHashSet<>(4);
 
+		// 遍历构造方法里的参数类型
 		for (int paramIndex = 0; paramIndex < paramTypes.length; paramIndex++) {
+			// 拿到具体的参数类型与名字
 			Class<?> paramType = paramTypes[paramIndex];
 			String paramName = (paramNames != null ? paramNames[paramIndex] : "");
 			// Try to find matching constructor argument value, either indexed or generic.
 			ConstructorArgumentValues.ValueHolder valueHolder = null;
+			// 如果在 mbd 中指定了构造方法的参数值，则拿到具体的对象
 			if (resolvedValues != null) {
 				valueHolder = resolvedValues.getArgumentValue(paramIndex, paramType, paramName, usedValueHolders);
 				// If we couldn't find a direct match and are not supposed to autowire,
@@ -718,6 +744,7 @@ class ConstructorResolver {
 					args.preparedArguments[paramIndex] = convertedValue;
 				}
 				else {
+					// 如果进行类型转化，则转化
 					MethodParameter methodParam = MethodParameter.forExecutable(executable, paramIndex);
 					try {
 						convertedValue = converter.convertIfNecessary(originalValue, paramType, methodParam);
@@ -736,6 +763,7 @@ class ConstructorResolver {
 						args.preparedArguments[paramIndex] = sourceValue;
 					}
 				}
+				// 当前多遍历的参数对应的参数值
 				args.arguments[paramIndex] = convertedValue;
 				args.rawArguments[paramIndex] = originalValue;
 			}
