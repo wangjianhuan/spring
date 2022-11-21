@@ -2,6 +2,7 @@ package com.wangjh.annotation.config;
 
 import com.wangjh.annotation.service.OrderService;
 import com.wangjh.annotation.service.OrderServiceBY_NAME;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
@@ -12,10 +13,10 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan("com.wangjh.annotation")
 public class AppConfig {
 
-//	@Bean({"orderService1","orderService2"})
-//	public OrderService orderService(){
-//		return new OrderService();
-//	}
+	@Bean({"orderService1","orderService2"})
+	public OrderService orderService(){
+		return new OrderService();
+	}
 
 	// autowire 被弃用 现已删除
 //	@Bean(autowire = Autowire.BY_NAME)

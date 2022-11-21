@@ -17,10 +17,10 @@ public class XunHuanYiLaiTest {
 		 //
 		 //在原型Bean下，通过传递方法参数可以直接选定想要的构造方式来执行Bean的创建
 		UserService userService1 = (UserService) context.getBean("userService");
-		UserService userService2 = (UserService) context.getBean("userService");
+		//UserService userService2 = (UserService) context.getBean("userService");
 
 
-		//System.out.println("userService = " + userService);
+		System.out.println("userService = " + userService1);
 		//userService.test();
 
 
