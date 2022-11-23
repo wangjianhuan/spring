@@ -1,4 +1,4 @@
-package com.wangjh.selfEditor;
+package com.wangjh.XML.selfEditor;
 
 import org.springframework.beans.PropertyEditorRegistrar;
 import org.springframework.beans.PropertyEditorRegistry;

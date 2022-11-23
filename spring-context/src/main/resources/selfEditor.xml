@@ -3,7 +3,7 @@
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="customer" class="com.wangjh.selfEditor.Customer">
+	<bean id="customer" class="com.wangjh.XML.selfEditor.Customer">
 		<property name="name" value="zhangsan"></property>
 		<property name="address" value="陕西省_西安市_高陵区"></property>
 	</bean>
@@ -17,10 +17,13 @@
 	<bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">
 		<property name="customEditors">
 			<map>
-				<entry key="com.wangjh.selfEditor.Address">
-					<value>com.wangjh.selfEditor.AddressPropertyEditor</value>
+				<entry key="com.wangjh.XML.selfEditor.Address">
+					<value>com.wangjh.XML.selfEditor.AddressPropertyEditor</value>
 				</entry>
 			</map>
 		</property>
 	</bean>
+
+	<bean id="A" class="com.wangjh.XML.service.A"/>
+	<bean id="B" class="com.wangjh.XML.service.B"/>
 </beans>

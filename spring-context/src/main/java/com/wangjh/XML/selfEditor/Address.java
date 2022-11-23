@@ -1,4 +1,4 @@
-package com.wangjh.selfEditor;
+package com.wangjh.XML.selfEditor;
 
 /**
  * @author wjh

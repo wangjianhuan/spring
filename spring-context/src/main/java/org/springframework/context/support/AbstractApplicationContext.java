@@ -622,7 +622,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 
 		// Initialize any placeholder property sources in the context environment.
-		//初始化容器所需要的数据源 留给子类实现
+		//初始化容器所需要的数据源 留给子类实现 eg：子类可以把ServletContext 中的参数设置到Environment 当中去
 		initPropertySources();
 
 		// Validate that all properties marked as required are resolvable:
