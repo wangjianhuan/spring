@@ -554,6 +554,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				StartupStep beanPostProcess = this.applicationStartup.start("spring.context.beans.post-process");
 				// Invoke factory processors registered as beans in the context.
 				// TODO: 2022/3/19 执行 BeanFactoryPostProcessor 必须在实例化单例对象之前调用
+				// 执行所有的 BeanFactoryPostProcess && 扫描出 PostProcess(包括 BeanFactoryPostProcess 和 BeanPostProcess)
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// Register bean processors that intercept bean creation.
@@ -683,6 +684,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		// Tell the internal bean factory to use the context's class loader etc.
 		// 设置bean的类加载器
 		beanFactory.setBeanClassLoader(getClassLoader());
+
+		// 是否允许SpringEL表达式
 		if (!shouldIgnoreSpel) {
 			beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));
 		}
@@ -747,6 +750,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * <p>Must be called before singleton instantiation.
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
+
+		// 重点方法
+		// getBeanFactoryPostProcessors 传入的是容器指定的 postProcessor，这个一般是由程序员声明的，默认为空
+		// 1、对传入的 postProcessor 进行分类 registryProcessors(执行 postProcessBeanDefinitionRegistry 方法) 和 regularPostProcessors(只分类，不执行方法)
+		// 2、获取容器启动时添加的 postProcessor(默认只有一个：internalConfigurationAnnotationProcessor)  然后寻找继承了 PriorityOrdered 接口的并对其进行排序（升序排序）后执行 postProcessBeanDefinitionRegistry 方法
+		// 3、执行方法后继续扫描 postProcessor(此时会扫描到自定义的postProcessor) 然后执行实现了 Ordered 接口的类(基本过程同步骤2)
+		// 4、重新扫描并执行最后未执行的 postProcessor
+		// 5、扫描实现了 BeanFactoryPostProcessor 接口的 PostProcessor 并进行分类
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found in the meantime
@@ -892,6 +903,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory beanFactory) {
 		// Initialize conversion service for this context.
+		// ConversionService 是用来进行类型转化工作的
 		if (beanFactory.containsBean(CONVERSION_SERVICE_BEAN_NAME) &&
 				beanFactory.isTypeMatch(CONVERSION_SERVICE_BEAN_NAME, ConversionService.class)) {
 			beanFactory.setConversionService(
@@ -902,6 +914,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		// (such as a PropertySourcesPlaceholderConfigurer bean) registered any before:
 		// at this point, primarily for resolution in annotation attribute values.
 		// 如果没有 BeanFactoryPostProcessor ，则注册一个默认的 BeanFactoryPostProcessor
+		// 设置默认的占位符解析器 ${}
 		if (!beanFactory.hasEmbeddedValueResolver()) {
 			beanFactory.addEmbeddedValueResolver(strVal -> getEnvironment().resolvePlaceholders(strVal));
 		}

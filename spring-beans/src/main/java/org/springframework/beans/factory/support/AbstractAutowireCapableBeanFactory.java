@@ -1541,7 +1541,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		for (PropertyDescriptor pd : pds) {
 			// 1.是否具有 set 方法
 			if (pd.getWriteMethod() != null
-					// 2.没有在 ignoredDependencyTypes 中
+					// 2.没有在 ignoredDependencyTypes 中 // 回调awre事件，使用by_type注入  会自己过滤掉当前的实现了回调事件的注入方法
 					&& !isExcludedFromDependencyCheck(pd)
 					// 3.如果该属性对应的set方法是实现某个接口中所定义的，那么接口没有在 ignoredDependencyTypes 中
 					&& !pvs.contains(pd.getName())

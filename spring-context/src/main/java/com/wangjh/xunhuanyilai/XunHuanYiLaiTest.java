@@ -1,11 +1,8 @@
 package com.wangjh.xunhuanyilai;
 
 import com.wangjh.xunhuanyilai.config.AppConfig;
-import com.wangjh.xunhuanyilai.service.A;
 import com.wangjh.xunhuanyilai.service.UserService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import java.util.Map;
 
 public class XunHuanYiLaiTest {
 	public static void main(String[] args) {
@@ -23,17 +20,19 @@ public class XunHuanYiLaiTest {
 		//UserService userService2 = (UserService) context.getBean("userService");
 
 
-		Map<String, A> beans = context.getBeansOfType(A.class);
-		for (Map.Entry<String, A>  item : beans.entrySet()) {
-			item.getValue().test();
-			System.out.println("============");
-			Map<String, ? extends A> map = context.getBeansOfType(item.getValue().getClass());
-			System.out.println(map);
-			Object bean = context.getBean(item.getKey());
-			System.out.println(bean);
-		}
+		//Map<String, A> beans = context.getBeansOfType(A.class);
+		//for (Map.Entry<String, A>  item : beans.entrySet()) {
+		//	item.getValue().test();
+		//	System.out.println("============");
+		//	Map<String, ? extends A> map = context.getBeansOfType(item.getValue().getClass());
+		//	System.out.println(map);
+		//	Object bean = context.getBean(item.getKey());
+		//	System.out.println(bean);
+		//}
 
 		System.out.println("userService = " + userService1);
+		// 发布事件
+		//context.publishEvent("23113");
 		//userService.test();
 
 
