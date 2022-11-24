@@ -14,5 +14,6 @@ public class MyClassPathXmlApplicationContext extends ClassPathXmlApplicationCon
 	protected void initPropertySources() {
 		System.out.println("扩展initPropertySources方法");
 		getEnvironment().setRequiredProperties("username");
+		// 添加VM参数  -Dusername=XXX
 	}
 }

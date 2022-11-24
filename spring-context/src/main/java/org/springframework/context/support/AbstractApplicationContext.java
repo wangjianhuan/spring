@@ -534,10 +534,16 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			// Tell the subclass to refresh the internal bean factory.
 			// 创建容器对象：DefaultListableBeanFactory
 			// 加载xml配置文件的属性值到当前工厂中，最重要的就是BeanDefinition
+			// update：实现AbstractRefreshableApplicationContext的类 ，执行此方法会刷新容器，未实现该方法的容器，会直接报错，不允许其刷新容器，上面注释过于片面
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
 			// // beanFactory的准备工作，对各种属性进行填充
+			// 1、设置 beanFactory 的类加载器，SpringEl 表达式解析器，类型转化注册器
+			// 2、添加三个 beanPostProcessor，这儿是具体的实现类
+			// 3、记录 ignoreDependencyInterface
+			// 4、解析 ResolvableDependency
+			// 5、添加三个单例 Bean
 			prepareBeanFactory(beanFactory);
 
 			try {
@@ -627,7 +633,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 		// Validate that all properties marked as required are resolvable:
 		// see ConfigurablePropertyResolver#setRequiredProperties
-		// 验证标记为必需的所有属性都是可解析的：请参阅 ConfigurablePropertyResolversetRequiredProperties
+		// 验证标记为必需的所有属性都是可解析的：请参阅 ConfigurablePropertyResolver.setRequiredProperties
 		getEnvironment().validateRequiredProperties();
 
 		// Store pre-refresh ApplicationListeners...
@@ -662,6 +668,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
 		// 初始化BeanFactory,并进行XML文件读取，并将得到的BeanFactory记录在当前实体的属性中
+		// update： 判断容器是否可以刷新
 		refreshBeanFactory();
 		return getBeanFactory();
 	}
