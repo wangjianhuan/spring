@@ -175,6 +175,7 @@ class ConfigurationClassParser {
 	protected final void parse(@Nullable String className, String beanName) throws IOException {
 		Assert.notNull(className, "No bean class name for configuration class bean definition");
 		MetadataReader reader = this.metadataReaderFactory.getMetadataReader(className);
+		// 封装配置类 并进行解析配置类
 		processConfigurationClass(new ConfigurationClass(reader, beanName), DEFAULT_EXCLUSION_FILTER);
 	}
 
@@ -202,6 +203,7 @@ class ConfigurationClassParser {
 
 
 	protected void processConfigurationClass(ConfigurationClass configClass, Predicate<String> filter) throws IOException {
+		// 检查是否有 @Condition 注解，进行条件匹配
 		if (this.conditionEvaluator.shouldSkip(configClass.getMetadata(), ConfigurationPhase.PARSE_CONFIGURATION)) {
 			return;
 		}
@@ -226,10 +228,13 @@ class ConfigurationClassParser {
 		// Recursively process the configuration class and its superclass hierarchy.
 		SourceClass sourceClass = asSourceClass(configClass, filter);
 		do {
+			// 解析配置类
 			sourceClass = doProcessConfigurationClass(configClass, sourceClass, filter);
 		}
+		// return sourceClass 为配置类的父类，递归调用其父类
 		while (sourceClass != null);
 
+		// configurationClasses 重写了 equals 方法，则两个 configurationClasses 的 className 相等就可以
 		this.configurationClasses.put(configClass, configClass);
 	}
 
@@ -246,12 +251,15 @@ class ConfigurationClassParser {
 			ConfigurationClass configClass, SourceClass sourceClass, Predicate<String> filter)
 			throws IOException {
 
+		// 判断配置类上面有没有 @Component 注解
 		if (configClass.getMetadata().isAnnotated(Component.class.getName())) {
 			// Recursively process any member (nested) classes first
+			// 在解析一个配置类时，如果有 @Component 注解，则会判断内部类是不是 lite 配置类，并且会被记录导入的
 			processMemberClasses(configClass, sourceClass, filter);
 		}
 
 		// Process any @PropertySource annotations
+		// 处理一些 @PropertySource 注解，遍历注解的路径 对其进行遍历处理
 		for (AnnotationAttributes propertySource : AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), PropertySources.class,
 				org.springframework.context.annotation.PropertySource.class)) {
@@ -265,12 +273,14 @@ class ConfigurationClassParser {
 		}
 
 		// Process any @ComponentScan annotations
+		// 处理一些 @ComponentScan 注解， 会进行扫描，将得到的 BeanDefinition 放到 Spring 容器中，并且会检查是不是配置类进行处理
 		Set<AnnotationAttributes> componentScans = AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), ComponentScans.class, ComponentScan.class);
 		if (!componentScans.isEmpty() &&
 				!this.conditionEvaluator.shouldSkip(sourceClass.getMetadata(), ConfigurationPhase.REGISTER_BEAN)) {
 			for (AnnotationAttributes componentScan : componentScans) {
 				// The config class is annotated with @ComponentScan -> perform the scan immediately
+				// 这里会进行扫描，得到的 BeanDefinition 会注册到 Spring 容器中
 				Set<BeanDefinitionHolder> scannedBeanDefinitions =
 						this.componentScanParser.parse(componentScan, sourceClass.getMetadata().getClassName());
 				// Check the set of scanned definitions for any further config classes and parse recursively if needed
@@ -279,6 +289,7 @@ class ConfigurationClassParser {
 					if (bdCand == null) {
 						bdCand = holder.getBeanDefinition();
 					}
+					// 判断扫描出来的 BeanDefinition 是不是配置类(full和lite)
 					if (ConfigurationClassUtils.checkConfigurationClassCandidate(bdCand, this.metadataReaderFactory)) {
 						parse(bdCand.getBeanClassName(), holder.getBeanName());
 					}
@@ -287,6 +298,12 @@ class ConfigurationClassParser {
 		}
 
 		// Process any @Import annotations
+		// 处理 @Import 注解
+		// getImports(sourceClass) 会拿到 @Import 导入的类
+		// 如果导入的是普通类，那么会直接把它当作配置类解析
+		// 如果导入的是普通的 ImportSelector，那会会将返回的类再次调用 processImports()
+		// 如果导入的是特殊的 ImportSelector，DeferredImportSelector ，那么会暂时不处理，会在解析完当前这轮配置类后在进行处理
+		// 如果导入的是 ImportBeanDefinitionRegistrar, 那么暂时不会处理，会在解析玩这轮配置类后，将配置类解析为 BeanDefinition
 		processImports(configClass, sourceClass, getImports(sourceClass), filter, true);
 
 		// Process any @ImportResource annotations
