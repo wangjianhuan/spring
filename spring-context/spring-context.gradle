@@ -42,4 +42,10 @@ dependencies {
 	testFixturesImplementation(testFixtures(project(":spring-beans")))
 	testFixturesImplementation("com.google.code.findbugs:jsr305")
 	testFixturesImplementation("org.assertj:assertj-core")
+	// https://mvnrepository.com/artifact/mysql/mysql-connector-java
+	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.28'
+	// https://mvnrepository.com/artifact/org.mybatis/mybatis
+	implementation group: 'org.mybatis', name: 'mybatis', version: '3.5.7'
+
+
 }
