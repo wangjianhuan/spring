@@ -20,15 +20,12 @@ public class XunHuanYiLaiTest {
 		//UserService userService2 = (UserService) context.getBean("userService");
 
 
-		//Map<String, A> beans = context.getBeansOfType(A.class);
-		//for (Map.Entry<String, A>  item : beans.entrySet()) {
-		//	item.getValue().test();
-		//	System.out.println("============");
-		//	Map<String, ? extends A> map = context.getBeansOfType(item.getValue().getClass());
-		//	System.out.println(map);
-		//	Object bean = context.getBean(item.getKey());
-		//	System.out.println(bean);
-		//}
+		// Map<String, BeanPostProcessor> beans = context.getBeansOfType(BeanPostProcessor.class);
+		// for (Map.Entry<String, BeanPostProcessor>  item : beans.entrySet()) {
+		// 	System.out.println("============");
+		// 	Map<String, ? extends BeanPostProcessor> map = context.getBeansOfType(item.getValue().getClass());
+		// 	System.out.println("map = " + map);
+		// }
 
 		System.out.println("userService = " + userService1);
 		// 发布事件

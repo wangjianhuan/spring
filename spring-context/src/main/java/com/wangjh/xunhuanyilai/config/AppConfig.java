@@ -1,12 +1,20 @@
 package com.wangjh.xunhuanyilai.config;
 
+import com.wangjh.xunhuanyilai.service.OrderService;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.scheduling.annotation.EnableAsync;
 
 @ComponentScan("com.wangjh.xunhuanyilai")
-@EnableAsync
+// @EnableAsync
 //@Import(OrderService.class)
 //@ImportResource("XXX.xml")
 public class AppConfig{
+
+
+	@Bean
+	public OrderService orderService (){
+		System.out.println("AppConfig.orderService");
+		return new OrderService();
+	}
 
 }
