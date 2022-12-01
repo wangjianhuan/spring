@@ -5,6 +5,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 @ComponentScan("com.wangjh.xunhuanyilai")
 @EnableAsync
-public class AppConfig {
+//@Import(OrderService.class)
+//@ImportResource("XXX.xml")
+public class AppConfig{
 
 }
