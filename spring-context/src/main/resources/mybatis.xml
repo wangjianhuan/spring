@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 设置别名 -->
+	<typeAliases>
+		<package name="com.etc.ssm.entity"/>
+	</typeAliases>
+	<!-- 加载数据库属性文件 -->
+	<properties resource="db.properties"></properties>
+	<environments default="development">
+		<environment id="development">
+			<!--使用JDBC实务管理-->
+			<transactionManager type="JDBC"></transactionManager>
+			<!--连接池  POOLED为连接池方式 -->
+			<dataSource type="POOLED">
+				<property name="driver" value="${jdbc.driver}"></property>
+				<property name="url" value="${jdbc.url}"></property>
+				<property name="username" value="${jdbc.username}" />
+				<property name="password" value="${jdbc.password}" />
+			</dataSource>
+		</environment>
+	</environments>
+	<!--  引入映射文件 -->
+	<mappers>
+		<mapper resource="com.etc.ssm.mapper.UserMapper.xml"/>
+	</mappers>
+</configuration>

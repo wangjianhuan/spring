@@ -23,5 +23,10 @@ public class UserService {
         System.out.println("userMapper.selectById() = " + userMapper.selectById());
 
         System.out.println("orderMapper.selectById() = " + orderMapper.selectById());
-    }
+
+		for (String s : userMapper.selectAll()) {
+			System.out.println("s = " + s);
+		}
+
+	}
 }

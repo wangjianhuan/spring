@@ -1,10 +1,9 @@
 package com.wangjh.mybatis.config;
 
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.FactoryBean;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author wjh
@@ -15,20 +14,30 @@ public class WJHFactoryBean implements FactoryBean {
 
     private Class mapperInterface;
 
+	private SqlSession sqlSession;
+
     public WJHFactoryBean(Class mapperInterface) {
         this.mapperInterface = mapperInterface;
     }
 
-    @Override
+	@Autowired
+	public void setSqlSession(SqlSessionFactory sqlSessionFactory) {
+		sqlSessionFactory.getConfiguration().addMapper(mapperInterface);
+		this.sqlSession = sqlSessionFactory.openSession();
+	}
+
+	@Override
     public Object getObject() throws Exception {
-        Object proxyInstance = Proxy.newProxyInstance(WJHFactoryBean.class.getClassLoader(), new Class[]{mapperInterface}, new InvocationHandler() {
-            @Override
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                System.out.println("WJHFactoryBean.invoke:" + method.getName());
-                return null;
-            }
-        });
-        return proxyInstance;
+        //Object proxyInstance = Proxy.newProxyInstance(WJHFactoryBean.class.getClassLoader(), new Class[]{mapperInterface}, new InvocationHandler() {
+        //    @Override
+        //    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        //        System.out.println("WJHFactoryBean.invoke:" + method.getName());
+        //        return null;
+        //    }
+        //});
+        //return proxyInstance;
+		Object mapper = sqlSession.getMapper(mapperInterface);
+		return mapper;
     }
 
     @Override
