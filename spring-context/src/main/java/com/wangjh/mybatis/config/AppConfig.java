@@ -1,6 +1,5 @@
 package com.wangjh.mybatis.config;
 
-import com.wangjh.mybatis.annotation.WJHMapperScan;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.mapping.Environment;
@@ -9,6 +8,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
@@ -21,7 +21,8 @@ import java.io.InputStream;
  * @email 1151777592@qq.com
  */
 @ComponentScan("com.wangjh.mybatis")
-@WJHMapperScan("com.wangjh.mybatis.mapper")
+//@WJHMapperScan("com.wangjh.mybatis.mapper")
+@MapperScan("com.wangjh.mybatis.mapper")
 public class AppConfig {
 
 	//@Bean

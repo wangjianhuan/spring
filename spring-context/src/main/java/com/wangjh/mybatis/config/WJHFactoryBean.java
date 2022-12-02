@@ -3,7 +3,6 @@ package com.wangjh.mybatis.config;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author wjh
@@ -20,7 +19,6 @@ public class WJHFactoryBean implements FactoryBean {
         this.mapperInterface = mapperInterface;
     }
 
-	@Autowired
 	public void setSqlSession(SqlSessionFactory sqlSessionFactory) {
 		sqlSessionFactory.getConfiguration().addMapper(mapperInterface);
 		this.sqlSession = sqlSessionFactory.openSession();

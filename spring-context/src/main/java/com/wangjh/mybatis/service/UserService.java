@@ -20,8 +20,10 @@ public class UserService {
     private OrderMapper orderMapper;
 
     public void test() {
-        System.out.println("userMapper.selectById() = " + userMapper.selectById());
 
+		//userMapper.selectById() 执行过程 SqlSessionTemplate.selectOne --> SqlSessionProxy.selectOne --> DefaultSqlSessionFactory.selectOne
+        System.out.println("userMapper.selectById() = " + userMapper.selectById());
+		// mybatis 一级缓存会影响隔离级别，不建议开启
         System.out.println("orderMapper.selectById() = " + orderMapper.selectById());
 
 		for (String s : userMapper.selectAll()) {
