@@ -5,17 +5,17 @@ import org.springframework.stereotype.Service;
 @Service
 // @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 //@Lazy
-public class UserService {
+//@Aspect
+public class UserService implements UserInterface{
 
 	// //@Autowired
 	// private OrderService orderService;
 
 
-
 	//@Autowired(required = false)
-	public UserService() {
-		System.out.println("UserService.UserService:无参构造方法");
-	}
+	//public UserService() {
+	//	System.out.println("UserService.UserService:无参构造方法");
+	//}
 
 
 	//
@@ -35,7 +35,11 @@ public class UserService {
 	// }
 
 	// @Async
-	public void test(){
-		System.out.println("AService.test");
+	public void test() {
+		System.out.println("UserService.test");
+	}
+
+	public void aVoid() {
+		System.out.println("UserService.aVoid");
 	}
 }

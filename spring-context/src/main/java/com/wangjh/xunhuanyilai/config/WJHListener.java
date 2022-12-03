@@ -2,13 +2,12 @@ package com.wangjh.xunhuanyilai.config;
 
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.stereotype.Component;
 
 /**
  * ApplicationListenerDetector 类里面处理了 Listener 逻辑   在初始化后方法里
  * EventListenerMethodProcessor 处理方法上添加的 @EventListener 注解逻辑
  */
-@Component
+//@Component
 //@Lazy
 public class WJHListener implements ApplicationListener {
 
