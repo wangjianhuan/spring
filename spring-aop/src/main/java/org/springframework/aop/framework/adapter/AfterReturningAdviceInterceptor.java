@@ -16,15 +16,14 @@
 
 package org.springframework.aop.framework.adapter;
 
-import java.io.Serializable;
-
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-
 import org.springframework.aop.AfterAdvice;
 import org.springframework.aop.AfterReturningAdvice;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import java.io.Serializable;
 
 /**
  * Interceptor to wrap an {@link org.springframework.aop.AfterReturningAdvice}.
@@ -50,7 +49,7 @@ public class AfterReturningAdviceInterceptor implements MethodInterceptor, After
 		this.advice = advice;
 	}
 
-
+	// 核心逻辑   先执行方法，在执行被代理后的逻辑
 	@Override
 	@Nullable
 	public Object invoke(MethodInvocation mi) throws Throwable {

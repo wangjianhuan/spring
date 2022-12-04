@@ -45,6 +45,7 @@ public interface AdvisorAdapter {
 	 * @see #getInterceptor(org.springframework.aop.Advisor)
 	 * @see org.springframework.aop.BeforeAdvice
 	 */
+	// AOP代码执行先后逻辑核心方法
 	boolean supportsAdvice(Advice advice);
 
 	/**

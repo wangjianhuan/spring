@@ -54,10 +54,12 @@ dependencies {
 //	implementation group: 'org.mybatis', name: 'mybatis-spring', version: '2.0.6'
 
 	// https://mvnrepository.com/artifact/org.aspectj/aspectjweaver
-//	runtimeOnly group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.8'
+	runtimeOnly group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.8'
+
 
 	// https://mvnrepository.com/artifact/aspectj/aspectjrt
-//	implementation group: 'aspectj', name: 'aspectjrt', version: '1.9.8'
+	implementation group: 'aspectj', name: 'aspectjrt', version: '1.5.3'
+
 
 
 

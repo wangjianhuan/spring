@@ -1,7 +1,10 @@
 package com.wangjh.xunhuanyilai;
 
+import com.wangjh.xunhuanyilai.aop.advice.WJHAdvisor;
 import com.wangjh.xunhuanyilai.config.AppConfig;
+import com.wangjh.xunhuanyilai.service.UserInterface;
 import com.wangjh.xunhuanyilai.service.UserService;
+import org.springframework.aop.MethodBeforeAdvice;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -95,13 +98,19 @@ public class XunHuanYiLaiTest {
 
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.setTarget(target);
-		//proxyFactory.setInterfaces(UserInterface.class);
-		// 添加 advice 的顺序会因影响他的执行顺序
+		proxyFactory.setInterfaces(UserInterface.class);
+		 //添加 advice 的顺序会因影响他的执行顺序
 		//proxyFactory.addAdvice(new WJHAroundAdvice());
-		//proxyFactory.addAdvice((MethodBeforeAdvice) (method, args1, target1) -> System.out.println("XunHuanYiLaiTest.ProxyFactory.before"));
-		//proxyFactory.addAdvisor(new WJHAdvisor());
-		UserService proxy = (UserService) proxyFactory.getProxy();
+		proxyFactory.addAdvice((MethodBeforeAdvice) (method, args1, target1) -> System.out.println("XunHuanYiLaiTest.ProxyFactory.before"));
+		proxyFactory.addAdvisor(new WJHAdvisor());
+		// 使用 JDK 代理  返回的对象必须是接口类型  否则会报错
+		UserInterface proxy = (UserInterface) proxyFactory.getProxy();
 		proxy.aVoid();
 		proxy.test();
+
+		// 注解方式代理   需要在 context 容器当中去获取 bean 才可以生效
+		//UserInterface userService = context.getBean("userService", UserInterface.class);
+		//userService.test();
+		//userService.aVoid();
 	}
 }

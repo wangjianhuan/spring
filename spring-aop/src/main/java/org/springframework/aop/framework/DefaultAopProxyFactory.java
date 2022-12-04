@@ -16,11 +16,11 @@
 
 package org.springframework.aop.framework;
 
-import java.io.Serializable;
-import java.lang.reflect.Proxy;
-
 import org.springframework.aop.SpringProxy;
 import org.springframework.core.NativeDetector;
+
+import java.io.Serializable;
+import java.lang.reflect.Proxy;
 
 /**
  * Default {@link AopProxyFactory} implementation, creating either a CGLIB proxy
@@ -53,6 +53,13 @@ public class DefaultAopProxyFactory implements AopProxyFactory, Serializable {
 
 	@Override
 	public AopProxy createAopProxy(AdvisedSupport config) throws AopConfigException {
+		// 如果 ProxyFactory 的 isOptimize 为 true ，Spring认为cglib比jdk动态代理要快
+		// 或者 isProxyTargetClass 为true
+		// 或者被代理的类没有实现接口
+		// 将采用 cglib 进行代理，但是如果代理类是一个接口，或者代理类已经被 JDK动态代理已经代理，则必须使用 JDK动态代理
+		// 其他都会采用 JDK动态代理，比如被代理类实现了SpringProxy以外的其他接口
+
+		// 是不是在 GraalVM 虚拟机上运行的
 		if (!NativeDetector.inNativeImage() &&
 				(config.isOptimize() || config.isProxyTargetClass() || hasNoUserSuppliedProxyInterfaces(config))) {
 			Class<?> targetClass = config.getTargetClass();

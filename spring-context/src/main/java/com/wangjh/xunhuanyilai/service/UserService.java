@@ -1,5 +1,7 @@
 package com.wangjh.xunhuanyilai.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -8,8 +10,9 @@ import org.springframework.stereotype.Service;
 //@Aspect
 public class UserService implements UserInterface{
 
-	// //@Autowired
-	// private OrderService orderService;
+	 @Autowired
+	 @Lazy  // ContextAnnotationAutowireCandidateResolver getTarget()方法
+	 private OrderService orderService;
 
 
 	//@Autowired(required = false)
