@@ -16,19 +16,18 @@
 
 package org.springframework.aop.aspectj.annotation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.aspectj.lang.reflect.PerClauseKind;
-
 import org.springframework.aop.Advisor;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Helper for retrieving @AspectJ beans from a BeanFactory and building
@@ -103,12 +102,17 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 						}
 						if (this.advisorFactory.isAspect(beanType)) {
 							aspectNames.add(beanName);
+							// 切面的注解信息
 							AspectMetadata amd = new AspectMetadata(beanType, beanName);
+							// 如果切面不是 singleton, perthis, pertarget,... 那么切面只会生成一个代理对象（单例）
+							// 并且将切面上对应的 Advisor 对象进行缓存
 							if (amd.getAjType().getPerClause().getKind() == PerClauseKind.SINGLETON) {
 								MetadataAwareAspectInstanceFactory factory =
 										new BeanFactoryAspectInstanceFactory(this.beanFactory, beanName);
+								// 解析 Aspect 类
 								List<Advisor> classAdvisors = this.advisorFactory.getAdvisors(factory);
 								if (this.beanFactory.isSingleton(beanName)) {
+									// 缓存切面所对应的所有 Advisor 对象
 									this.advisorsCache.put(beanName, classAdvisors);
 								}
 								else {

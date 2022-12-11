@@ -269,13 +269,16 @@ class CglibAopProxy implements AopProxy, Serializable {
 		}
 	}
 
+	// 核心方法
 	private Callback[] getCallbacks(Class<?> rootClass) throws Exception {
 		// Parameters used for optimization choices...
+		// 与 JDK动态代理 功能基本相同
 		boolean exposeProxy = this.advised.isExposeProxy();
 		boolean isFrozen = this.advised.isFrozen();
 		boolean isStatic = this.advised.getTargetSource().isStatic();
 
 		// Choose an "aop" interceptor (used for AOP calls).
+		// cglib 执行某一个逻辑时会进入到这个类中 intercept 方法中
 		Callback aopInterceptor = new DynamicAdvisedInterceptor(this.advised);
 
 		// Choose a "straight to target" interceptor. (used for calls that are
@@ -654,6 +657,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 			boolean setProxyContext = false;
 			Object target = null;
 			TargetSource targetSource = this.advised.getTargetSource();
+			// 类似于 JDK 动态代理的执行逻辑
 			try {
 				if (this.advised.exposeProxy) {
 					// Make invocation available if necessary.
@@ -663,6 +667,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 				// Get as late as possible to minimize the time we "own" the target, in case it comes from a pool...
 				target = targetSource.getTarget();
 				Class<?> targetClass = (target != null ? target.getClass() : null);
+				// 核心方法，制造执行链路
 				List<Object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass);
 				Object retVal;
 				// Check whether we only have one InvokerInterceptor: that is,

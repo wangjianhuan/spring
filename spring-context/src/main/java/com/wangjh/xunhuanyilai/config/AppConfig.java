@@ -12,6 +12,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 //@Import(OrderService.class)
 //@ImportResource("XXX.xml")
 //@Import(DefaultAdvisorAutoProxyCreator.class)
+//@EnableAspectJAutoProxy(proxyTargetClass = true) // 只会使用cglib
 @EnableAspectJAutoProxy
 //@Import(AnnotationAwareAspectJAutoProxyCreator.class)
 public class AppConfig {

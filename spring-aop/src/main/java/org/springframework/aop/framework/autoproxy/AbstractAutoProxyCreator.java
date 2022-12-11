@@ -284,6 +284,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		if (bean != null) {
 			Object cacheKey = getCacheKey(bean.getClass(), beanName);
 			if (this.earlyProxyReferences.remove(cacheKey) != bean) {
+				// 创建代理对象， 其中有创建代理的子类
 				return wrapIfNecessary(bean, beanName, cacheKey);
 			}
 		}
@@ -323,18 +324,27 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		if (StringUtils.hasLength(beanName) && this.targetSourcedBeans.contains(beanName)) {
 			return bean;
 		}
+		// advisedBeans 表示已经判断过当前 Bean ，返回 false 表示当前 Bean 不需要进行代理，直接返回
 		if (Boolean.FALSE.equals(this.advisedBeans.get(cacheKey))) {
 			return bean;
 		}
+		// 当前创建的 Bean 不需要进行 AOP，比如正在切面Bean
 		if (isInfrastructureClass(bean.getClass()) || shouldSkip(bean.getClass(), beanName)) {
 			this.advisedBeans.put(cacheKey, Boolean.FALSE);
 			return bean;
 		}
 
+		// TODO: 2022/12/6 ProxyFactory 在执行某一个方法的时候会进行匹配需不需要AOP 
+		// TODO: 2022/12/6 Spring 在执行PostProcess的时候也会匹配一个 Bean 是够需要进行 AOP
 		// Create proxy if we have advice.
+		// 判断当前的 Bean 是否存在匹配的 Advice ，如果存在需要生成一个代理对象
+		// 此处根据类的类型以及类的方法匹配到 Interceptor(也就是 Advice) 然后生成代理对象，代理对象在执行的时候，还会根据当前执行的
 		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null);
-		if (specificInterceptors != DO_NOT_PROXY) {
+		// 判断是否需要进行 AOP
+		if (specificInterceptors != DO_NOT_PROXY) { // DO_NOT_PROXY = null
+			// advisedBeans 记录某一个 Bean 已经被 AOP 过了
 			this.advisedBeans.put(cacheKey, Boolean.TRUE);
+			// 创建代理对象
 			Object proxy = createProxy(
 					bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));
 			this.proxyTypes.put(cacheKey, proxy.getClass());
