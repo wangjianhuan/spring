@@ -16,22 +16,12 @@
 
 package org.springframework.aop.aspectj;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInvocation;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.weaver.tools.JoinPointMatch;
 import org.aspectj.weaver.tools.PointcutParameter;
-
 import org.springframework.aop.AopInvocationException;
 import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
@@ -43,11 +33,16 @@ import org.springframework.aop.support.StaticMethodMatcher;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
+import org.springframework.util.*;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Base class for AOP Alliance {@link org.aopalliance.aop.Advice} classes
@@ -603,10 +598,10 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 
 	/**
 	 * Invoke the advice method.
-	 * @param jpMatch the JoinPointMatch that matched this execution join point
+	 *
+	 * @param jpMatch     the JoinPointMatch that matched this execution join point
 	 * @param returnValue the return value from the method execution (may be null)
-	 * @param ex the exception thrown by the method execution (may be null)
-	 * @return the invocation result
+	 * @param ex          the exception thrown by the method execution (may be null)
 	 * @throws Throwable in case of invocation failure
 	 */
 	protected Object invokeAdviceMethod(
@@ -628,9 +623,16 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 		if (this.aspectJAdviceMethod.getParameterCount() == 0) {
 			actualArgs = null;
 		}
+		// 反射调用 aspectJAdviceMethod 方法
 		try {
 			ReflectionUtils.makeAccessible(this.aspectJAdviceMethod);
-			return this.aspectJAdviceMethod.invoke(this.aspectInstanceFactory.getAspectInstance(), actualArgs);
+			// 拿到 Advice 中所记录的 LazySingletonAspectInstanceFactoryDecorator 对象从而获得 Bean 实例，然后执行对应的方法
+			// 一个代理对象可能会有多个 Advisor，也就是 Advice，而这些 Advice 生成是使用的同一个 LazySingletonAspectInstanceFactoryDecorator
+			// 不过一个类如果和某个 perthis、pertarget 的切面匹配时，在生成代理对象时还会有一个额外的 Advisor，这个Advisor会负责
+			// aspectJAdviceMethod 表示当前执行的 Bean
+			return this.aspectJAdviceMethod.invoke(
+					// 拿到当前的切面的对象
+					this.aspectInstanceFactory.getAspectInstance(), actualArgs);
 		}
 		catch (IllegalArgumentException ex) {
 			throw new AopInvocationException("Mismatch on arguments to advice method [" +

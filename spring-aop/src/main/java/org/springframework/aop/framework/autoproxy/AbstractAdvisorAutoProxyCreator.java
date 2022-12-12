@@ -96,7 +96,7 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	protected List<Advisor> findEligibleAdvisors(Class<?> beanClass, String beanName) {
 		// 寻找出 IOC 中所有的 Advisor
 		List<Advisor> candidateAdvisors = findCandidateAdvisors();
-		// 进行筛选
+		// 进行筛选  匹配一下合适的 Advice
 		List<Advisor> eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName);
 		extendAdvisors(eligibleAdvisors);
 		// 对于 Advisor进行排序，按照 Ordered接口、@Order进行排序
@@ -112,6 +112,7 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	 */
 	protected List<Advisor> findCandidateAdvisors() {
 		Assert.state(this.advisorRetrievalHelper != null, "No BeanFactoryAdvisorRetrievalHelper available");
+		// 需要看子类的实现
 		return this.advisorRetrievalHelper.findAdvisorBeans();
 	}
 
