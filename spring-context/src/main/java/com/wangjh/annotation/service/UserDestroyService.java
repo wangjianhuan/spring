@@ -8,7 +8,9 @@ import jakarta.annotation.PreDestroy;
  * @email 1151777592@qq.com
  */
 //@Component
-public class UserDestroyService implements AutoCloseable {
+public class UserDestroyService
+		//implements AutoCloseable
+{
 
 	public UserDestroyService() {
 	}
@@ -22,7 +24,7 @@ public class UserDestroyService implements AutoCloseable {
 		System.out.println("UserDestroyService.destroy");
 	}
 
-	@Override
+	//@Override
 	public void close() throws Exception {
 		System.out.println("UserDestroyService.close");
 	}
