@@ -16,9 +16,9 @@
 
 package org.springframework.transaction.interceptor;
 
-import java.lang.reflect.Method;
-
 import org.springframework.lang.Nullable;
+
+import java.lang.reflect.Method;
 
 /**
  * Strategy interface used by {@link TransactionInterceptor} for metadata retrieval.
@@ -61,6 +61,7 @@ public interface TransactionAttributeSource {
 	 * in which case the declaring class of the method must be used)
 	 * @return the matching transaction attribute, or {@code null} if none found
 	 */
+	// 事务会走这个 AbstractFallbackTransactionAttributeSource 类
 	@Nullable
 	TransactionAttribute getTransactionAttribute(Method method, @Nullable Class<?> targetClass);
 

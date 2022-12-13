@@ -47,9 +47,16 @@ public class TransactionManagementConfigurationSelector extends AdviceModeImport
 	protected String[] selectImports(AdviceMode adviceMode) {
 		switch (adviceMode) {
 			case PROXY:
+				// 默认是 PROXY
+				// AutoProxyRegistrar:注册一个继承AOP注册类的子类
+				// ProxyTransactionManagementConfiguration:
+				// 给容器中放置三个 Bean
+				// 	1、BeanFactoryTransactionAttributeSourceAdvisor(用来判断那个Bean需要用来执行事务(切面))
+				//  2、pointcut  3、Advice
 				return new String[] {AutoProxyRegistrar.class.getName(),
 						ProxyTransactionManagementConfiguration.class.getName()};
 			case ASPECTJ:
+				// 表示不用动态代理技术，用 ASPECTJ 技术，比较麻烦
 				return new String[] {determineTransactionAspectClass()};
 			default:
 				return null;
