@@ -1,5 +1,6 @@
 package com.wangjh.transactional.config;
 
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,6 +13,7 @@ import javax.sql.DataSource;
 
 
 @ComponentScan("com.wangjh.transactional")
+@Configurable
 @EnableTransactionManagement
 public class AppConfig {
 
@@ -24,6 +26,8 @@ public class AppConfig {
 	public PlatformTransactionManager transactionManager() {
 		DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
 		transactionManager.setDataSource(dataSource());
+		// 保存数据  不回滚数据
+		transactionManager.setGlobalRollbackOnParticipationFailure(false);
 		return transactionManager;
 	}
 
