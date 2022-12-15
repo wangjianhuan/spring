@@ -16,11 +16,11 @@
 
 package org.springframework.transaction.interceptor;
 
+import org.springframework.lang.Nullable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.lang.Nullable;
 
 /**
  * TransactionAttribute implementation that works out whether a given exception
@@ -127,6 +127,7 @@ public class RuleBasedTransactionAttribute extends DefaultTransactionAttribute i
 		int deepest = Integer.MAX_VALUE;
 
 		if (this.rollbackRules != null) {
+			// 遍历所有的 RollbackRuleAttribute ，判断现在抛出的异常是否匹配 RollbackRuleAttribute 中指定的异常类型的子类或者其本身
 			for (RollbackRuleAttribute rule : this.rollbackRules) {
 				int depth = rule.getDepth(ex);
 				if (depth >= 0 && depth < deepest) {
@@ -138,9 +139,11 @@ public class RuleBasedTransactionAttribute extends DefaultTransactionAttribute i
 
 		// User superclass behavior (rollback on unchecked) if no rule matches.
 		if (winner == null) {
+			// 运行时异常
 			return super.rollbackOn(ex);
 		}
 
+		// ex所匹配的 RollbackRuleAttribute，可能是 NoRollbackRuleAttribute，如果匹配的 NoRollbackRuleAttribute，那就便是这个异常不用回滚
 		return !(winner instanceof NoRollbackRuleAttribute);
 	}
 
