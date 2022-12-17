@@ -1,0 +1,4 @@
+请求先进来 DispatcherServlet
+调用 父类(FrameworkServlet) 的 service 方法
+可能调用父类的 service 方法
+根据请求调用doGet或者doPost方法
